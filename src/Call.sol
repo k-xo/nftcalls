@@ -45,6 +45,14 @@ contract Call is IERC721Receiver {
     /// @notice the token in which the option is settled / denominated in.
     address public immutable SETTLEMENT_TOKEN;
 
+    modifier onlyCreator() {
+        require(
+            msg.sender == creator,
+            "Only the creator of the option can do this"
+        );
+        _;
+    }
+
     /**
      * @notice initializes the values for the call option
      * @param strikePrice strike price
@@ -69,8 +77,10 @@ contract Call is IERC721Receiver {
     /// @param _underlying the address of the NFT contract that will act as the underlying
     /// @param _tokenId the ID of the token the creator wants to deposit
     // maybe move this to the constructor & do it all in one step(?)
-    function deposit(address _underlying, uint256 _tokenId) external {
-        require(msg.sender == creator);
+    function deposit(address _underlying, uint256 _tokenId)
+        external
+        onlyCreator
+    {
         require(!underlyingDeposited, "This NFT has already been deposited");
 
         underlying = _underlying;
@@ -85,8 +95,7 @@ contract Call is IERC721Receiver {
     }
 
     /// @notice Allows the creator of the option to withdraw the NFT if the expiry date has passed
-    function withdraw() external {
-        require(msg.sender == creator);
+    function withdraw() external onlyCreator {
         require(block.timestamp <= EXPIRY, "The option has not expired");
 
         IERC721(underlying).safeTransferFrom(
@@ -124,9 +133,7 @@ contract Call is IERC721Receiver {
         );
     }
 
-    /**
-     * @inheritdoc IERC721Receiver
-     */
+    /// @inheritdoc IERC721Receiver
     function onERC721Received(
         address,
         address,
