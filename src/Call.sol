@@ -87,7 +87,7 @@ contract Call is IERC721Receiver {
     /// @notice Allows the creator of the option to withdraw the NFT if the expiry date has passed
     function withdraw() external {
         require(msg.sender == creator);
-        require(block.timestamp >= EXPIRY, "The option has not expired");
+        require(block.timestamp <= EXPIRY, "The option has not expired");
 
         IERC721(underlying).safeTransferFrom(
             address(this),
@@ -100,7 +100,7 @@ contract Call is IERC721Receiver {
     /// @notice allows the buyer to buy the option
     function buy() external {
         require(underlyingDeposited, "An underlying is yet to be deposited");
-        require(block.timestamp > EXPIRY, "The option has already expired");
+        require(block.timestamp < EXPIRY, "The option has already expired");
 
         IERC20(SETTLEMENT_TOKEN).safeTransferFrom(msg.sender, creator, PREMIUM);
         buyer = msg.sender;
