@@ -96,7 +96,7 @@ contract Call is IERC721Receiver {
 
     /// @notice Allows the creator of the option to withdraw the NFT if the expiry date has passed
     function withdraw() external onlyCreator {
-        require(block.timestamp <= EXPIRY, "The option has not expired");
+        require(block.timestamp > EXPIRY, "The option has not expired");
 
         IERC721(underlying).safeTransferFrom(
             address(this),
