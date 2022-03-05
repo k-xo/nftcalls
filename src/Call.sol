@@ -30,8 +30,11 @@ contract Call is IERC721Receiver {
     /// @notice address of the buyer of the call option
     address public buyer;
 
-    /// @notice mapping to check whether an NFT has already been deposited to the contract
+    /// @notice bool to check whether an NFT has already been deposited to the contract
     bool public underlyingDeposited;
+
+    /// @notice bool to check whether the call has already been purchased by the buyer to not allow multiple purchases
+    bool public purchased;
 
     /// @notice strike price in which the option is excercisbale
     uint256 public immutable STRIKE_PRICE;
@@ -110,9 +113,11 @@ contract Call is IERC721Receiver {
     function buy() external {
         require(underlyingDeposited, "An underlying is yet to be deposited");
         require(block.timestamp < EXPIRY, "The option has already expired");
+        require(!purchased, "The option has already been purchased");
 
         IERC20(SETTLEMENT_TOKEN).safeTransferFrom(msg.sender, creator, PREMIUM);
         buyer = msg.sender;
+        purchased = true;
     }
 
     ///@notice allows the buyer to exercise their option
