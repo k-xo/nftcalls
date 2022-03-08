@@ -24,8 +24,8 @@ contract Call is IERC721Receiver {
     /// @notice specfic tokenId of the NFT the seller of the call owns
     uint256 public tokenId;
 
-    /// @notice address of the creator / seller of the call option
-    address public creator;
+    /// @notice address of the writer / seller of the call option
+    address public writer;
 
     /// @notice address of the buyer of the call option
     address public buyer;
@@ -48,10 +48,10 @@ contract Call is IERC721Receiver {
     /// @notice the token in which the option is settled / denominated in.
     address public immutable SETTLEMENT_TOKEN;
 
-    modifier onlyCreator() {
+    modifier onlyWriter() {
         require(
-            msg.sender == creator,
-            "Only the creator of the option can do this"
+            msg.sender == writer,
+            "Only the writer of the option can do this"
         );
         _;
     }
@@ -69,7 +69,7 @@ contract Call is IERC721Receiver {
         uint256 premium,
         uint256 expiry
     ) {
-        creator = msg.sender;
+        writer = msg.sender;
         STRIKE_PRICE = strikePrice;
         PREMIUM = premium;
         SETTLEMENT_TOKEN = settlmentToken;
@@ -78,11 +78,11 @@ contract Call is IERC721Receiver {
 
     /// @notice Deposits an NFT to the contract
     /// @param _underlying the address of the NFT contract that will act as the underlying
-    /// @param _tokenId the ID of the token the creator wants to deposit
+    /// @param _tokenId the ID of the token the writer wants to deposit
     // maybe move this to the constructor & do it all in one step(?)
     function deposit(address _underlying, uint256 _tokenId)
         external
-        onlyCreator
+        onlyWriter
     {
         require(!underlyingDeposited, "This NFT has already been deposited");
 
@@ -97,8 +97,8 @@ contract Call is IERC721Receiver {
         );
     }
 
-    /// @notice Allows the creator of the option to withdraw the NFT if the expiry date has passed
-    function withdraw() external onlyCreator {
+    /// @notice Allows the writer of the option to withdraw the NFT if the expiry date has passed
+    function withdraw() external onlyWriter {
         require(block.timestamp > EXPIRY, "The option has not expired");
 
         IERC721(underlying).safeTransferFrom(
@@ -115,7 +115,7 @@ contract Call is IERC721Receiver {
         require(block.timestamp < EXPIRY, "The option has already expired");
         require(!purchased, "The option has already been purchased");
 
-        IERC20(SETTLEMENT_TOKEN).safeTransferFrom(msg.sender, creator, PREMIUM);
+        IERC20(SETTLEMENT_TOKEN).safeTransferFrom(msg.sender, writer, PREMIUM);
         buyer = msg.sender;
         purchased = true;
     }
@@ -127,7 +127,7 @@ contract Call is IERC721Receiver {
 
         IERC20(SETTLEMENT_TOKEN).safeTransferFrom(
             msg.sender,
-            creator,
+            writer,
             STRIKE_PRICE
         );
 
