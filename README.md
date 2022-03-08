@@ -6,9 +6,9 @@ ERC721 Call Options.
 ### How it works
 An instance of the `Call` contract is deployed, with parameters
 such as the `STRIKE_PRICE`, `PREMIUM`, `SETTLEMENT_TOKEN` and `EXPIRY` defined.
-The option seller can then call `deposit` to deposit an NFT to the contract, and has the option of withdrawing the NFT, by calling `withdraw` once the `EXPIRY` has been reached.
+The option `writer` can then call `deposit` to deposit an NFT to the contract, and has the option of withdrawing the NFT, by calling `withdraw` once the `EXPIRY` has been reached.
 
-A buyer of the option can then call `buy` to purchase the option and pay the `PREMIUM`, once the `EXPIRY` has been reached the buyer has the option of calling `excercise` which allows them to exercise their option at the `STRIKE_PRICE` thereby purchasing the NFT.
+A `buyer` of the option can then call `buy` to purchase the option and pay the `PREMIUM`, once the `EXPIRY` has been reached the buyer has the option of calling `excercise` which allows them to exercise their option at the `STRIKE_PRICE` thereby purchasing the NFT.
 
 
 ## Running & Testing
