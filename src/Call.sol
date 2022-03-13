@@ -120,7 +120,7 @@ contract Call is IERC721Receiver {
         purchased = true;
     }
 
-    ///@notice allows the buyer to exercise their option
+    /// @notice allows the buyer to exercise their option
     function excercise() external {
         require(block.timestamp < EXPIRY, "The option has already expired");
         require(msg.sender == buyer, "Only buyer can exercise option");
