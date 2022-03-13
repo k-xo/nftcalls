@@ -16,9 +16,4 @@ A `buyer` of the option can then call `buy` to purchase the option and pay the `
 This project uses Foundry you can find more about getting setup with foundry
 [here](https://github.com/gakonst/foundry). After getting setup you can run `forge build` and `forge test`, to compile and run tests respectively.
 
-
-## Todo's
-
-- [ ] Write Tests
-- [ ] Refactor to allow depositing multiple NFTs and buying multiple calls
       
